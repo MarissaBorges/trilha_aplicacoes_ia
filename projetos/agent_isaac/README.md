@@ -45,10 +45,10 @@ Siga os passos abaixo para configurar e executar o projeto na sua máquina.
 **1. Clone o Repositório**
 ```bash
 # Clone o projeto para a sua máquina local
-git clone [https://github.com/seu-usuario/seu-repositorio.git](https://github.com/seu-usuario/seu-repositorio.git)
+git clone https://github.com/MarissaBorges/assistente-isaac.git
 
 # Entre no diretório do projeto
-cd seu-repositorio
+cd assistente-isaac
 ```
 
 **2. Crie e Ative um Ambiente Virtual**
@@ -60,6 +60,7 @@ python -m venv venv
 # Ative o ambiente
 # No Windows:
 venv\Scripts\activate
+
 # No macOS/Linux:
 source venv/bin/activate
 ```
