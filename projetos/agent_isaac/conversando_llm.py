@@ -22,6 +22,8 @@ from langchain.memory import ConversationBufferMemory
 from langchain.prompts import ChatPromptTemplate
 from langchain.prompts import MessagesPlaceholder
 from langchain_core.runnables import RunnablePassthrough
+import time
+import sys
 
 load_dotenv(find_dotenv())
 
@@ -39,7 +41,7 @@ class ConversandoLLM():
         self.channels = 1
         self.dtype = 'int16'
         self.filename = "temp.wav"
-        self.hotkey = '<ctrl>+<shift>+a'
+        self.hotkey = '<ctrl>+<shift>+z'
 
         self.whisper = whisper.load_model(whisper_size)
         self.llm = ChatOpenAI(model=model, temperature=0)
@@ -111,9 +113,18 @@ class ConversandoLLM():
         """Função que roda em uma thread separada para não bloquear o programa principal."""
         self.llm_queue.put("Entendido. Por favor, digite o caminho para o arquivo CSV no terminal.")
         
+        if sys.platform == 'win32':
+            import msvcrt
+            while msvcrt.kbhit():
+                msvcrt.getch()
+        else:
+            import termios
+            termios.tcflush(sys.stdin, termios.TCIFLUSH)
+        
         while True:
             self.accepting_terminal_input = True
-            caminho_arquivo_bruto = input("Por favor, insira o caminho para o arquivo CSV (ou 'cancelar')\nPara colar um caminho deve apertar Ctrl+Shift+C: ")
+            print("\nPor favor, insira o caminho para o arquivo CSV (ou 'cancelar')")
+            caminho_arquivo_bruto = input("Caminho: ")
             self.accepting_terminal_input = False
             
             caminho_arquivo = caminho_arquivo_bruto.strip('\'"')
@@ -185,10 +196,10 @@ class ConversandoLLM():
             tts_text += self.llm_queue.get()
 
             if '.' in tts_text or '?' in tts_text or '!' in tts_text:
-                # print(tts_text)
+                print(tts_text)
 
                 spoken_resposta = client.audio.speech.create(model='tts-1',
-                    voice='shimmer',
+                    voice='echo',
                     response_format='opus',
                     input=tts_text
                     )
